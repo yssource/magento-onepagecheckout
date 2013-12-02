@@ -2,7 +2,7 @@ OnepageCheckout                                   app/code/local/IWD/OnepageChec
 frontend/template/onepagecheckout       app/design/frontend/base/default/template/onepagecheckout
 frontend/layout/onepagecheckout.xml                app/design/frontend/base/default/layout/onepagecheckout.xml
 
-IWD_OnepageCheckout.xml.xml                          app/etc/modules/IWD_OnepageCheckout.xml.xml
+IWD_OnepageCheckout.xml                          app/etc/modules/IWD_OnepageCheckout.xml
 lib/iwd lib/iwd
 lib/MaxMind lib/MaxMind
 
