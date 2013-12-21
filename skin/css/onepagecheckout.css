@@ -262,10 +262,9 @@ body.onepagecheckout-index-index .op_block_title {margin: 10px 0 20px; font-size
 #onepagecheckout_orderform .form_fields input.t1, textarea {-webkit-box-shadow: inset 0px 0px 5px 0px #eaeaea;-moz-box-shadow: inset 0px 0px 5px 0px #eaeaea;-webkit-border-radius: 2px;-moz-border-radius: 2px;}
 #onepagecheckout_orderform .form_fields sup {top: 0px ! important}
 /* OPC: blocks + coupon form adjusted to theme */
-#checkout-coupon-discount-load, .onepagecheckout_block {padding: 10px; margin: 5px 0; border-top: 6px solid #97d2c9; border-radius: 2px; box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.10); background: #fff} 
+#checkout-coupon-discount-load, .onepagecheckout_block {padding: 10px; margin: 5px 0; border-radius: 2px; box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.10); background: #fff} 
 #checkout-coupon-discount-load, .onepagecheckout_block {-webkit-border-radius: 2px;-moz-border-radius: 2px;-webkit-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.10);-moz-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.10);}
 /* TODO: Needs to be moved to php.css to capture colour from settings */
-#checkout-coupon-discount-load, .onepagecheckout_block {border-top-color: #f85506;}
 .ptdivline {display: none}
 /* OPC: coupon button adjustments */
 #checkout-coupon-discount-load button.button span {height: 28px}
