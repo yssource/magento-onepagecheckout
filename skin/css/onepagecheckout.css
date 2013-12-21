@@ -276,7 +276,6 @@ body.onepagecheckout-index-index .op_block_title {margin: 10px 0 20px; font-size
 /* OPC: checkout button */
 #onepagecheckout_orderform button.button.btn-checkout {font-size: 12px; text-transform: uppercase; padding: 0 20px; background: none; height: 32px !important;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; box-shadow: none; -webkit-box-shadow: none; -moz-box-shadow: none;}
 /* TODO: Needs to be moved to php.css to capture colour from settings */
-#onepagecheckout_orderform button.button.btn-checkout {background-color: #f85506;}
 /* OPC: Errormessages are too large */
 #onepagecheckout_orderform .error-msg, #onepagecheckout_orderform .success-msg, 
 #onepagecheckout_orderform .note-msg, #onepagecheckout_orderform .notice-msg {padding: 5px ! important;padding-left: 40px ! important;background-position: 4px 4px ! important;font-size: 14px ! important;}
