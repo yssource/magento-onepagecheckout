@@ -41,15 +41,13 @@ $has_addr	= $this->customerHasAddresses();
 			</div>
 			<div class='clr'></div>
 			<?php if (!$logged)  : ?>
-				<div class="two_fields">
-                    <div class="">
-                        <label for="billing:email" class="required">
-                            <?php echo $this->__('Email Address') ?>
-                        </label>
-                        <sup>*</sup>
-                        <div class="data_area">
-                            <input type="text" name="billing[email]" value="<?php echo $this->htmlEscape($this->getBillAddress()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class=" input-text  validate-email required-entry" />
-                        </div>
+				<div class="full">
+                    <label for="billing:email" class="required">
+                        <?php echo $this->__('Email Address') ?>
+                    </label>
+                    <sup>*</sup>
+                    <div class="data_area">
+                        <input type="text" name="billing[email]" value="<?php echo $this->htmlEscape($this->getBillAddress()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class=" input-text  validate-email required-entry" />
                     </div>
 				</div>
 			<?php endif;
@@ -92,7 +90,7 @@ $has_addr	= $this->customerHasAddresses();
 			$ar	= Mage::getStoreConfig('onepagecheckout/address_form/address');
 			if ($ar !== 'hidden') : 
 			?>
-				<div class="two_fields">
+				<div class="full">
                     <label for="billing:street1"<?php if($ar === 'required'){echo ' class="required" ';}?> >
                         <?php echo $this->__('Address') ?>
                     </label>

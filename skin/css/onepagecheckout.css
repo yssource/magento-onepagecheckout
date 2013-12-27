@@ -508,3 +508,6 @@ body.onepagecheckout-index-index .op_block_title {margin: 10px 0 20px; font-size
 .onepagecheckout_datafields .col-1 .form_fields div.two_fields .data_area input{
 width: 95%;
 }
+.onepagecheckout_datafields .col-1 .form_fields div.full .data_area input{
+width: 95%;
+}
