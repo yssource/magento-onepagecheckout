@@ -503,3 +503,8 @@ body.onepagecheckout-index-index .op_block_title {margin: 10px 0 20px; font-size
 .popup-cont-inner .btns .btn-next { right:0px; background-position:0 -102px;}
 .popup-cont-inner .btns .btn-next:hover { background-position:-36px -102px;}
 .popup-cont-inner .btns .btn-next-disabled {right:0px; background-position:-72px -102px; cursor:default;}
+
+
+.onepagecheckout_datafields .col-1 .form_fields div.two_fields .data_area input{
+width: 95%;
+}
