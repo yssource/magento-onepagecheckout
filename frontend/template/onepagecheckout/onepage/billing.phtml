@@ -42,7 +42,7 @@ $has_addr	= $this->customerHasAddresses();
 			<div class='clr'></div>
 			<?php if (!$logged)  : ?>
 				<div class="two_fields">
-                    <div class="short">
+                    <div class="">
                         <label for="billing:email" class="required">
                             <?php echo $this->__('Email Address') ?>
                         </label>
@@ -92,12 +92,12 @@ $has_addr	= $this->customerHasAddresses();
 			$ar	= Mage::getStoreConfig('onepagecheckout/address_form/address');
 			if ($ar !== 'hidden') : 
 			?>
-				<div class="full">
-					<label for="billing:street1"<?php if($ar === 'required'){echo ' class="required" ';}?> >
-						<?php echo $this->__('Address') ?>
-					</label>
-					<?php if($ar === 'required'){echo '<sup>*</sup>';}?>
-					<div class="data_area">
+				<div class="two_fields">
+                    <label for="billing:street1"<?php if($ar === 'required'){echo ' class="required" ';}?> >
+                        <?php echo $this->__('Address') ?>
+                    </label>
+                    <?php if($ar === 'required'){echo '<sup>*</sup>';}?>
+                    <div class="data_area">
 						<input type="text" title="<?php echo $this->__('Street Address') ?>" name="billing[street][]" id="billing:street1" value="<?php echo $this->htmlEscape($this->getBillAddress()->getStreet(1)) ?>" class=" input-text <?php if($ar === 'required'){echo ' required-entry';}?>" />
 					</div>
 				</div>
@@ -105,8 +105,8 @@ $has_addr	= $this->customerHasAddresses();
 				$csl	= $this->helper('customer/address')->getStreetLines();
 				for ($i = 2; $i <= $csl; $i++){ 
 				?>
-				<div class="full">
-					<div class="data_area">
+				<div class="two_fields">
+					<div class="">
 						<input type="text" name="billing[street][]" id="billing:street<?php echo $i?>" title="<?php echo $this->__('Street Address %s', $i) ?>" value="<?php echo $this->htmlEscape($this->getBillAddress()->getStreet($i)) ?>" class=" input-text " />
 					</div>
 				</div>
