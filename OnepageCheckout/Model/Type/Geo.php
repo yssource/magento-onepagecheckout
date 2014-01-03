@@ -1,20 +1,20 @@
 <?php
-include("MaxMind/GeoIP/geoip.inc");
-include("MaxMind/GeoIP/geoipcity.inc");
-include("MaxMind/GeoIP/geoipregionvars.php");
+include(Mage::getBaseDir('lib').DS."MaxMind/GeoIP/geoip.inc");
+include(Mage::getBaseDir('lib').DS."MaxMind/GeoIP/geoipcity.inc");
+include(Mage::getBaseDir('lib').DS."MaxMind/GeoIP/geoipregionvars.php");
 
 class IWD_OnepageCheckout_Model_Type_Geo
 {
 	const CUSTOMER = 'customer';
     const GUEST    = 'guest';
     const REGISTER = 'register';
-    
+
     protected $_help_obj;
     protected $_quote_obj;
     private $_em_ex_msg = '';
     protected $_cust_sess;
     protected $_check_sess;
-    
+
     protected $verification_lib	= 'ups';
 
     public function __construct()
@@ -23,7 +23,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         $this->_em_ex_msg = $this->_help_obj->__('This email adress is already registered. Please enter another email to register account or login using this email.');
         $this->_check_sess = Mage::getSingleton('checkout/session');
         $this->_quote_obj	= $this->_check_sess->getQuote();
-        
+
         $this->_cust_sess = Mage::getSingleton('customer/session');
     }
 
@@ -31,12 +31,12 @@ class IWD_OnepageCheckout_Model_Type_Geo
     {
         return $this->_quote_obj;
     }
-    
+
     public function getCustomerSession()
     {
         return $this->_cust_sess;
     }
-    
+
     public function getCheckout()
     {
         return $this->_check_sess;
@@ -52,7 +52,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
 			if((!empty($max) && ($grand_total > $max)) || (!empty($min) && ($grand_total < $min)))
 				return false;
-        
+
 			return true;
         }
         else
@@ -135,26 +135,26 @@ class IWD_OnepageCheckout_Model_Type_Geo
             'billing' => $init_bill_data,
             'equal' => true
         );
-        
+
         $customer	= Mage::getSingleton('customer/session')->getCustomer();
         $addresses	= $customer->getAddresses();
-        
+
         if (!$customer || !$addresses)
         {
 			$result['equal'] = true;
 
-			// skip GeoIp search if user made 'Quote' on shopping cart page 
+			// skip GeoIp search if user made 'Quote' on shopping cart page
 			if(empty($result['shipping']['country_id']) && empty($result['shipping']['postcode']))
 			{
 	            if (Mage::getStoreConfig('onepagecheckout/geo_ip/country'))
 	            {
 	                $geoip = geoip_open(Mage::getBaseDir('lib').DS.'MaxMind/GeoIP/data/'.Mage::getStoreConfig('onepagecheckout/geo_ip/country_file'),GEOIP_STANDARD);
 	                $country_id	= geoip_country_code_by_addr($geoip, Mage::helper('core/http')->getRemoteAddr());
-	                $result['shipping']['country_id'] = $country_id; 
+	                $result['shipping']['country_id'] = $country_id;
 	                $result['billing']['country_id'] = $country_id;
 	                geoip_close($geoip);
 	            }
-	            
+
 	            if (Mage::getStoreConfig('onepagecheckout/geo_ip/city'))
 	            {
 	                $geoip = geoip_open(Mage::getBaseDir('lib').DS.'MaxMind/GeoIP/data/'.Mage::getStoreConfig('onepagecheckout/geo_ip/city_file'),GEOIP_STANDARD);
@@ -182,8 +182,8 @@ class IWD_OnepageCheckout_Model_Type_Geo
                 $result['shipping']['country_id'] = $country_id;
 				$result['billing']['country_id'] = $country_id;
             }
-        } 
-        else 
+        }
+        else
         {
             $bill_addr = $customer->getPrimaryBillingAddress();
             if (!$bill_addr)
@@ -193,7 +193,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
                     break;
                 }
             }
-        	
+
         	$ship_addr = $customer->getPrimaryShippingAddress();
             if (!$ship_addr)
             {
@@ -231,7 +231,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         return $this;
     }
-    
+
     public function usePayment($method_code = null)
     {
     	$store	= null;
@@ -239,7 +239,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
     		$store = $this->getQuote()->getStoreId();
 
         $methods = Mage::helper('payment')->getStoreMethods($store, $this->getQuote());
-        
+
         $payments = array();
         foreach ($methods as $method)
         {
@@ -269,7 +269,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
                 else
                     $method_code = $this->getQuote()->getShippingAddress()->getPaymentMethod();
             }
-            
+
             if($method_code)
             {
                 foreach ($payments as $payment)
@@ -339,7 +339,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
                     }
                 }
             }
-            
+
             if (!$exist || !$method_code)
             {
                 $method_code = Mage::getStoreConfig('onepagecheckout/general/shipping_method');
@@ -444,7 +444,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
             $this->getQuote()->setCheckoutMethod(self::GUEST);
 
 		if($skip_save){
-			
+
 			$mage_ver = Mage::helper('onepagecheckout')->getMagentoVersion();
 			if($mage_ver != '1.4.1.1' && $mage_ver != '1.4.1.0' && $mage_ver != '1.4.0.1' && $mage_ver != '1.4.0.0')
 			{
@@ -495,12 +495,12 @@ class IWD_OnepageCheckout_Model_Type_Geo
         }
 
         // fixed by Alex Calko for saving data to define property shipping method
-        if(!$skip_save)        
+        if(!$skip_save)
 			$this->getQuote()->collectTotals()->save();
 
         return array();
     }
-    
+
     public function saveShipping($data, $cust_addr_id, $validate = true, $skip_save = false)
     {
         if (empty($data))
@@ -513,7 +513,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
             unset($data['address_id']);
             $address->addData($data);
 // fix (26.10.13) (when user change shipping address, system does not resave this parameter)
-            $address->setSameAsBilling(0);        	
+            $address->setSameAsBilling(0);
         }
         else
         {
@@ -526,7 +526,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
                 $address->importCustomerAddress($cust_addr);
             }
         }
-        
+
         $address->implodeStreetAddress();
         $address->setCollectShippingRates(true);
 
@@ -538,7 +538,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         }
 
         // fixed by Alex Calko for saving data to define property shipping method
-        if(!$skip_save)        
+        if(!$skip_save)
 			$this->getQuote()->collectTotals()->save();
 
         return array();
@@ -561,7 +561,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         return array();
     }
-   
+
     /**
      * Validate customer data and set some its data for further usage in quote
      * Will return either true or array with error messages
@@ -643,7 +643,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
     {
         if ($address->getGender())
             $this->getQuote()->setCustomerGender($address->getGender());
-    	
+
         $dob = '';
         if ($address->getDob()) {
             $dob = Mage::app()->getLocale()->date($address->getDob(), null, null, false)->toString('yyyy-MM-dd');
@@ -661,7 +661,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
             $cust_data	= array(
                 'email'        => 'email',
                 'password'     => 'customer_password',
-                'confirmation' => 'confirm_password',            
+                'confirmation' => 'confirm_password',
                 'firstname'    => 'firstname',
                 'lastname'     => 'lastname',
                 'gender'       => 'gender',
@@ -686,7 +686,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         return true;
     }
-    
+
     public function validate()
     {
         $quote  = $this->getQuote();
@@ -721,7 +721,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         // mark that order will be saved by OPC module
         $this->getCheckout()->setProcessedOPC('opc');
-        
+
         $service_quote = Mage::getModel('onepagecheckout/service_quote', $this->getQuote());
         if($version == '1.4.0.1' || $version == '1.4.0.0')
         	$order	= $service_quote->submit();
@@ -739,16 +739,16 @@ class IWD_OnepageCheckout_Model_Type_Geo
                 Mage::logException($e);
             }
         }
-        
+
         if($version != '1.4.0.1' && $version != '1.4.0.0')
         {
 	        $this->getCheckout()->setLastQuoteId($this->getQuote()->getId())
 	            ->setLastSuccessQuoteId($this->getQuote()->getId())
 	            ->clearHelperData();
         }
-        
+
         if ($order)
-        {        	
+        {
             Mage::dispatchEvent('checkout_type_onepage_save_order_after', array('order'=>$order, 'quote'=>$this->getQuote()));
             $r_url = $this->getQuote()->getPayment()->getOrderPlaceRedirectUrl();
             if(!$r_url)
@@ -770,7 +770,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
 	            $agree = $order->getPayment()->getBillingAgreement();
 	            if ($agree)
-	                $this->getCheckout()->setLastBillingAgreementId($agree->getId());            	
+	                $this->getCheckout()->setLastBillingAgreementId($agree->getId());
             }
         }
 
@@ -782,10 +782,10 @@ class IWD_OnepageCheckout_Model_Type_Geo
 	            $ids = array();
 	            foreach($profiles as $profile)
 	                $ids[] = $profile->getId();
-	
+
 	            $this->getCheckout()->setLastRecurringProfileIds($ids);
 	        }
-	        
+
 	        if($version != '1.4.1.0')
 	        {
 		        Mage::dispatchEvent(
@@ -836,7 +836,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         }
         return $order_id;
     }
-    
+
     public function validateAddress($address)
     {
         $errors = array();
@@ -880,7 +880,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         return $errors;
     }
-        
+
     protected function _prepareNewCustomerQuote()
     {
         $bill = $this->getQuote()->getBillingAddress();
@@ -908,7 +908,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         if (!$bill->getCustomerGender() && $this->getQuote()->getCustomerGender())
             $bill->setCustomerGender($this->getQuote()->getCustomerGender());
-        
+
         if (!$bill->getCustomerDob() && $this->getQuote()->getCustomerDob())
             $bill->setCustomerDob($this->getQuote()->getCustomerDob());
 
@@ -928,7 +928,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         $ship = null;
         if(!$this->getQuote()->isVirtual())
         	$ship = $this->getQuote()->getShippingAddress();
-        
+
         $customer = $this->getCustomerSession()->getCustomer();
         if (!$bill->getCustomerId() || $bill->getSaveInAddressBook())
         {
@@ -960,7 +960,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         $quote->setCustomerId(null)->setCustomerEmail($quote->getBillingAddress()->getEmail())->setCustomerIsGuest(true)->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
         return $this;
     }
-    
+
     protected function _involveNewCustomer()
     {
         $customer = $this->getQuote()->getCustomer();
@@ -977,7 +977,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
         }
         return $this;
     }
-    
+
     protected function _customerEmailExists($email, $web_id = null)
     {
         $customer = Mage::getModel('customer/customer');
@@ -990,7 +990,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
         return false;
     }
-    
+
     public function setVerificationLib($lib)
     {
     	$this->verification_lib	= $lib;
@@ -1002,34 +1002,34 @@ class IWD_OnepageCheckout_Model_Type_Geo
     }
 
     public function validate_address($type = 'Billing', $data = false)
-    {  
-    	// for testing 
+    {
+    	// for testing
     	/*
     	$candidates	= array();
-    	
+
 		$us_states	= array();
-		$states = Mage::getModel('directory/country')->load('US')->getRegions(); 
+		$states = Mage::getModel('directory/country')->load('US')->getRegions();
 		foreach ($states as $state)
 			$us_states[$state->getCode()] = $state->getId();
-    	
+
 		$add['street'] = 'my test address';
 		$add['city']	= 'test city';
 		$add['region_abbr']	= 'CA';
 		$add['region']	= $us_states[$add['region_abbr']];
 		$add['postcode']	= '12345';
-		
+
 		$candidates[] = $add;
 		$candidates[] = $add;
 		$candidates[] = $add;
 		$candidates[] = $add;
 		$candidates[] = $add;
-			
+
    		$test_data	= array('error' => 'not valid');
 
     	$test_data['candidates']	= $candidates;
-    	
+
     	$this->getCheckout()->{"set{$type}ValidationResults"}($test_data);
-    	
+
     	return $test_data;
     	*/
     	// end for testing
@@ -1043,11 +1043,11 @@ class IWD_OnepageCheckout_Model_Type_Geo
     		$results = false;
 
     	$this->getCheckout()->{"set{$type}ValidationResults"}($results);
-    	
+
     	return $results;
     }
-    
-    // UPS api    
+
+    // UPS api
 	public function ups_validate_street_address($type = 'Billing', $data = false)
 	{
 		$error	= false;
@@ -1071,10 +1071,10 @@ class IWD_OnepageCheckout_Model_Type_Geo
         		if(in_array($reg, $state_no_ups))
         			return false;
         	}
-        	
+
         	if(!empty($data['street']) && !empty($data['city']) && !empty($data['postcode']) && !empty($data['region_id']))
         	{
-				$regionModel = Mage::getModel('directory/region')->load($data['region_id']); 
+				$regionModel = Mage::getModel('directory/region')->load($data['region_id']);
 				$regionId = $regionModel->getCode();
 
 				if(empty($regionId))
@@ -1106,7 +1106,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 				$GLOBALS ['ups_api'] ['username'] = $login;
 				$GLOBALS ['ups_api'] ['password'] = $pass;
 				///////////
-				
+
 				include_once('iwd/opcvalidation/ups/UpsAPI.php');
 				include_once('iwd/opcvalidation/ups/UpsAPI/USStreetLevelValidation.php');
 
@@ -1133,26 +1133,26 @@ class IWD_OnepageCheckout_Model_Type_Geo
 					{
 						$error	= 'NO';
 					}
-					
+
 					// get lis of addresses
 					$candidates = $this->get_ups_candidates($response);
-					
+
 					return array('error' => $error, 'candidates' => $candidates, 'original_address' => $check_address);
 				}
         	}
         }
         else
         	return false;
-		
+
 		return $error;
 	}
-	
+
 	public function get_ups_candidates($response)
 	{
 		$valid_addresses	= array();
-		
+
 		$us_states	= array();
-		$states = Mage::getModel('directory/country')->load('US')->getRegions(); 
+		$states = Mage::getModel('directory/country')->load('US')->getRegions();
 		foreach ($states as $state)
 			$us_states[$state->getCode()] = $state->getId();
 
@@ -1184,7 +1184,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
 		return $valid_addresses;
 	}
-	
+
 	public function parse_ups_candidate($candidate)
 	{
 		if($candidate['AddressClassification']['Code'] == 0)
@@ -1193,22 +1193,22 @@ class IWD_OnepageCheckout_Model_Type_Geo
 		$add = array();
 		if(!isset($candidate['AddressLine']))
 			return false;
-			
+
 		if(is_array($candidate['AddressLine']))
 			$add['street'] = $candidate['AddressLine'][0];
 		else
 			$add['street'] = $candidate['AddressLine'];
-			
+
 		if(!isset($candidate['PoliticalDivision2']))
 			return false;
-			
+
 		$add['city']	= $candidate['PoliticalDivision2'];
-					
+
 		if(!isset($candidate['PoliticalDivision1']))
 			return false;
 
 		$add['region_abbr']	= strtoupper($candidate['PoliticalDivision1']);
-		
+
 		if(!isset($candidate['PostcodePrimaryLow']))
 			return false;
 
@@ -1219,7 +1219,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 		return $add;
 	}
 	// End UPS api
-	
+
     // USPS api
 	public function usps_validate_street_address($type = 'Billing', $data = false)
 	{
@@ -1244,10 +1244,10 @@ class IWD_OnepageCheckout_Model_Type_Geo
         		if(in_array($reg, $state_no_ups))
         			return false;
         	}
-        	
+
         	if(!empty($data['street']) && !empty($data['city']) && !empty($data['postcode']) && !empty($data['region_id']))
         	{
-				$regionModel = Mage::getModel('directory/region')->load($data['region_id']); 
+				$regionModel = Mage::getModel('directory/region')->load($data['region_id']);
 				$regionId = $regionModel->getCode();
 
 				if(empty($regionId))
@@ -1268,19 +1268,19 @@ class IWD_OnepageCheckout_Model_Type_Geo
 				); // end address
 
 				include_once('iwd/opcvalidation/usps/USPSAddressVerify.php');
-					
+
 				$verify = new USPSAddressVerify($key);
-				
+
 				if($test_mode)
 					$verify->setTestMode(true);
 				else
 					$verify->setTestMode(false);
-				
+
 				$usps_address = new USPSAddress;
-				
+
 				if(isset($data['company']) && !empty($data['company']))
 					$usps_address->setFirmName($data['company']);
-				
+
 				$street_info	= $address->getStreet();
 				$street1	= '';
 				$street2	= '';
@@ -1297,19 +1297,19 @@ class IWD_OnepageCheckout_Model_Type_Geo
 				$usps_address->setAddress($street1);
 				$usps_address->setCity($data['city']);
 				$usps_address->setState($regionId);
-				
+
 				$zip	= trim($data['postcode']);
 				$zip	= str_replace(' ','-',$zip);
 				$z_p	= explode('-',$zip);
-				
+
 				$zip4	= '';
 				$zip5	= $z_p[0];
 				if(isset($z_p[1]) && !empty($z_p[1]))
 					$zip4	= $z_p[1];
-				
+
 				$usps_address->setZip5($zip5);
 				$usps_address->setZip4($zip4);
- 
+
 				$verify->addAddress($usps_address);
 
 				// Perform the request and return result
@@ -1331,7 +1331,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 					{
 						$error	= 'YES';
 					}
-					
+
 					return array('error' => $error, 'candidates' => $candidates, 'original_address' => $check_address);
 				}
 				else
@@ -1344,7 +1344,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 					elseif($er_code == '80040b1a')
 					{
 						return array('error' => 'API Authorization failure. User is not authorized to use API Verify.', 'candidates' => array(), 'original_address' => $check_address);
-//						
+//
 					}
 					elseif($er_code == '-2147219040')
 					{
@@ -1355,16 +1355,16 @@ class IWD_OnepageCheckout_Model_Type_Geo
         }
         else
         	return false;
-		
+
 		return $error;
 	}
-	
+
 	public function get_usps_candidates($response)
 	{
 		$valid_addresses	= array();
-		
+
 		$us_states	= array();
-		$states = Mage::getModel('directory/country')->load('US')->getRegions(); 
+		$states = Mage::getModel('directory/country')->load('US')->getRegions();
 		foreach ($states as $state)
 			$us_states[$state->getCode()] = $state->getId();
 
@@ -1383,7 +1383,7 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
 		return $valid_addresses;
 	}
-	
+
 	public function parse_usps_candidate($candidate)
 	{
 		if(!isset($candidate['Address2']) || empty($candidate['Address2']))
@@ -1391,17 +1391,17 @@ class IWD_OnepageCheckout_Model_Type_Geo
 
 		$add = array();
 		$add['street'] = $candidate['Address2'];
-			
+
 		if(!isset($candidate['City']) || empty($candidate['City']))
 			return false;
 
 		$add['city']	= $candidate['City'];
-					
+
 		if(!isset($candidate['State']) || empty($candidate['State']))
 			return false;
 
 		$add['region_abbr']	= strtoupper($candidate['State']);
-		
+
 		if(!isset($candidate['Zip5']) || empty($candidate['Zip5']))
 			return false;
 
